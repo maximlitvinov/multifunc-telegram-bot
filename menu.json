@@ -1,0 +1,17 @@
+[
+    {
+        "id": 1,
+        "name": "Калифорния сет",
+        "img": "https://sushikim.ru/image/cache/webp/catalog/%D0%A1%D1%83%D1%88%D0%B8%20%D0%9A%D0%B8%D0%BC_30.08.2023_0196-900x900.webp"
+    },
+    {
+        "id": 2,
+        "name": "Трио",
+        "img": "https://sushikim.ru/image/cache/webp/catalog/%D0%A1%D1%83%D1%88%D0%B8%20%D0%9A%D0%B8%D0%BC_30.08.2023_0193-1200x1200.webp"
+    },
+    {
+        "id": 3,
+        "name": "Топчик",
+        "img": "https://sushikim.ru/image/cache/webp/catalog/%D0%A1%D1%83%D1%88%D0%B8%20%D0%9A%D0%B8%D0%BC_30.08.2023_0170-1200x1200.webp"
+    }
+]
