@@ -42,11 +42,11 @@ console.log(checkForNutritionSecond);
 
  function getNutrition(message) {
   const query = message;
-  axios.get(
+  request.get(
     {
-      url: `https://api.api-ninjas.com/v1/nutrition?query=100g apple`,
+      url: 'https://api.api-ninjas.com/v1/nutrition?query=100g apple',
       headers: {
-        "X-Api-Key": 'kMuL3npmRN5iviHEGx7UZw==9cT0Q2LB5VwfRgW8',
+        "X-Api-Key": '',
       },
     },
     function (error, response, body) {
