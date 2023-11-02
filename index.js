@@ -12,7 +12,10 @@ bot.setMyCommands([
   { command: "/info", description: "Показать информацию о пользователе" },
   { command: "/weather", description: "Показать прогноз погоды" },
   { command: "/menu", description: "Показать меню магазина" },
-  { command: "/nutrition", description: "Узнать сколько калорий и БЖУ в продукте" },
+  {
+    command: "/nutrition",
+    description: "Узнать сколько калорий и БЖУ в продукте",
+  },
 ]);
 
 bot.on("message", async (msg) => {
@@ -24,43 +27,11 @@ bot.on("message", async (msg) => {
   const lang = msg.from.language_code;
 
   async function botStart() {
-
     async function unkownMessage(messageText) {
       const regexpKirilica = /^[?!,.а-яА-ЯёЁ0-9\s]+$/;
       const checkForKirilica = regexpKirilica.test(text);
 
 
-
-      
-//=================API for nutrition product=================//
-const nutritionPatern1 = /^\d+[A-Za-z]+\s[A-Za-z]+$/i
-const nutritionPatern2 = /^\d+[A-Za-z]+\s[A-Za-z]+\s[A-Za-z]+$/i
-const checkForNutritionFirst = nutritionPatern1.test(text);
-const checkForNutritionSecond = nutritionPatern2.test(text);
-console.log(checkForNutritionFirst);
-console.log(checkForNutritionSecond);
-
- function getNutrition(message) {
-  const query = message;
-  request.get(
-    {
-      url: 'https://api.api-ninjas.com/v1/nutrition?query=100g apple',
-      headers: {
-        "X-Api-Key": '',
-      },
-    },
-    function (error, response, body) {
-      if (error) return console.error("Request failed:", error);
-      else if (response.statusCode != 200)
-        return console.error(
-          "Error:",
-          response.statusCode,
-          body.toString("utf8")
-        );
-      else console.log(body);
-    }
-  );
-}
 
 
       if (messageText === "/start") {
@@ -110,16 +81,20 @@ console.log(checkForNutritionSecond);
             ],
           },
         };
-       await bot.sendMessage(chatId, "Вот меню", buttonOptions);
+        await bot.sendMessage(chatId, "Вот меню", buttonOptions);
       }
 
-      if(messageText === '/nutrition'){
-        await bot.sendMessage(chatId, 'Напиши вес продукта (в граммах или килограммах) и его название и узнаешь сколько калорий и БЖУ в этом продукте. пиши ТОЛЬКО НА АНГЛИЙСКОМ ЯЗЫКЕ. Ниже пример');
-        await bot.sendMessage(chatId,'Вот тебе пример: "100g chicken breast" - покажет какое количество БЖУ и калорий в 100 граммах куриной грудки');
+      if (messageText === "/nutrition") {
+        await bot.sendMessage(
+          chatId,
+          "Напиши вес продукта (в граммах или килограммах) и его название и узнаешь сколько калорий и БЖУ в этом продукте. пиши ТОЛЬКО НА АНГЛИЙСКОМ ЯЗЫКЕ. Ниже пример"
+        );
+        await bot.sendMessage(
+          chatId,
+          'Вот тебе пример: "100g chicken breast" - покажет какое количество БЖУ и калорий в 100 граммах куриной грудки'
+        );
       }
-      if(messageText === checkForNutritionFirst || messageText === checkForNutritionSecond){
-        getNutrition(messageText);
-      }
+      
 
       if (checkForKirilica) {
         bot.sendMessage(chatId, `${name}, я тебя не понимаю... `);
@@ -169,20 +144,58 @@ console.log(checkForNutritionSecond);
       bot.sendPhoto(chatId, weatherIcon);
     }
 
-
-
-
-
-
     const regexpForWeather = /^[a-zA-Z]+$/;
     const validMessage = regexpForWeather.test(text);
 
     if (validMessage) {
       return getWeather();
     }
-    //  else {
-    //   return bot.sendMessage(chatId,'Вы ввели город на кирилице, а надо на латинице');
-    // }
+
+     //=================API for nutrition product=================//
+     const nutritionPatern1 = /^\d+[A-Za-z]+\s[A-Za-z]+$/i;
+     const nutritionPatern2 = /^\d+[A-Za-z]+\s[A-Za-z]+\s[A-Za-z]+$/i;
+
+     const checkForNutritionFirst = nutritionPatern1.test(text);
+     const checkForNutritionSecond = nutritionPatern2.test(text);
+
+     console.log(checkForNutritionFirst);
+     console.log(checkForNutritionSecond);
+
+
+      const  getRequestNutrition = async (message) => {
+       try {
+         const responseNutrition =  await request.get(
+           {
+             url: "https://api.api-ninjas.com/v1/nutrition?query=" + message,
+             headers: {
+               "X-Api-Key": process.env.NUTRITION_API,
+             },
+           },
+            function  (error, response, body) {
+             if (error) return console.error("Request failed:", error);
+             else if (response.statusCode != 200)
+               return console.error(
+                 "Error:",
+                 response.statusCode,
+                 body.toString("utf8")
+               );
+             else return (body);
+           }
+         );
+         console.log(responseNutrition);
+
+       } catch (error) {
+           console.log(error);
+       }
+      
+     }
+//=====================================//
+    
+    if (checkForNutritionFirst || checkForNutritionSecond ) {
+         getRequestNutrition(text);
+    }
+  
+    
 
     return unkownMessage(text);
   }
