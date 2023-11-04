@@ -1,6 +1,5 @@
 require("dotenv").config();
 const menu = require("./menu.json");
-const request = require("request");
 const { default: axios } = require("axios");
 const TelegramBot = require("node-telegram-bot-api");
 
@@ -163,32 +162,19 @@ bot.on("message", async (msg) => {
 
 
       const  getRequestNutrition = async (message) => {
-       try {
-         const responseNutrition =  await request.get(
-           {
-             url: "https://api.api-ninjas.com/v1/nutrition?query=" + message,
-             headers: {
-               "X-Api-Key": process.env.NUTRITION_API,
-             },
-           },
-            function  (error, response, body) {
-             if (error) return console.error("Request failed:", error);
-             else if (response.statusCode != 200)
-               return console.error(
-                 "Error:",
-                 response.statusCode,
-                 body.toString("utf8")
-               );
-             else return (body);
-           }
-         );
-         console.log(responseNutrition);
+        const url = `https://api.api-ninjas.com/v1/nutrition?query=${message}`
+        
+        const axiosInstance = axios.create({
+          baseURL: url,
+          headers: {
+            'X-Api-Key': process.env.NUTRITION_API
+              }
+        });
 
-       } catch (error) {
-           console.log(error);
-       }
-      
-     }
+        const response = await axiosInstance.get(url);
+        const {name,calories,protein_g, serving_size_g} = response.data[0];
+        bot.sendMessage(chatId,`Название продукта: ${name}, вес: ${serving_size_g} г., калории: ${calories} ккал, Белков: ${protein_g} г.`);
+    }
 //=====================================//
     
     if (checkForNutritionFirst || checkForNutritionSecond ) {
