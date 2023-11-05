@@ -151,14 +151,17 @@ bot.on("message", async (msg) => {
     }
 
      //=================API for nutrition product=================//
-     const nutritionPatern1 = /^\d+[A-Za-z]+\s[A-Za-z]+$/i;
-     const nutritionPatern2 = /^\d+[A-Za-z]+\s[A-Za-z]+\s[A-Za-z]+$/i;
+     const nutritionPatern1 = /^\d+[g]+\s[A-Za-z]+$/i;
+     const nutritionPatern2 = /^\d+[g]+\s[A-Za-z]+\s[A-Za-z]+$/i;
+     const nutritionThirdWordsPatern = /^\d+[g]\s[A-Za-z]+\s[A-Za-z]+\s[A-Za-z]+$/i
 
      const checkForNutritionFirst = nutritionPatern1.test(text);
      const checkForNutritionSecond = nutritionPatern2.test(text);
+     const checkForNutritionThird = nutritionThirdWordsPatern.test(text);
 
      console.log(checkForNutritionFirst);
      console.log(checkForNutritionSecond);
+     console.log(checkForNutritionThird);
 
 
       const  getRequestNutrition = async (message) => {
@@ -172,12 +175,22 @@ bot.on("message", async (msg) => {
         });
 
         const response = await axiosInstance.get(url);
-        const {name,calories,protein_g, serving_size_g} = response.data[0];
-        bot.sendMessage(chatId,`Название продукта: ${name}, вес: ${serving_size_g} г., калории: ${calories} ккал, Белков: ${protein_g} г.`);
+        const {name,calories,protein_g, serving_size_g, fat_total_g,carbohydrates_total_g,fiber_g,sugar_g} = response.data[0];
+        
+        bot.sendMessage(chatId,
+      ` Название продукта: ${name}, 
+        Вес: ${serving_size_g} г. 
+        Калории: ${calories} ккал 
+        Белков: ${protein_g} г.
+        Жиров: ${fat_total_g} г.
+        Углеводов: ${carbohydrates_total_g} г.
+        Железа: ${fiber_g} г.
+        Сахара: ${sugar_g} г.
+        `);
     }
 //=====================================//
     
-    if (checkForNutritionFirst || checkForNutritionSecond ) {
+    if (checkForNutritionFirst || checkForNutritionSecond || checkForNutritionThird ) {
          getRequestNutrition(text);
     }
   
